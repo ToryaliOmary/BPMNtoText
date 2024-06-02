@@ -1,0 +1,14 @@
+Der Prozess beginnt mit dem Start-Ereignis: "Start event".
+Die Aufgabe 'Feedback einholen' wird von der Rolle 'IT Consultant' durchgeführt.
+  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Feedback zusammenfassen' übergeben.
+Die Aufgabe 'Feedback zusammenfassen' wird von der Rolle 'IT Consultant' durchgeführt.
+  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Handlungen ableiten' übergeben.
+Die Aufgabe 'Handlungen ableiten' wird von der Rolle 'IT Consultant' durchgeführt.
+  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Lösungsvorschläge dokumentieren' übergeben.
+Die Aufgabe 'Lösungsvorschläge dokumentieren' wird von der Rolle 'IT Consultant' durchgeführt.
+  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'dem nächsten Schritt' übergeben.
+  Der Prozess endet mit dem End-Ereignis "End Event".
