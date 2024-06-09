@@ -144,6 +144,7 @@ public class App {
                         .append(lane.getName())
                         .append("' durchgeführt.\n  Diese Aufgabe ist folgendermaßen beschrieben: \n   '" + taskDescription + "'")
                         .append("\n  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an '" + nextElement + "' übergeben.\n");
+                        appendIoSpecification(task, text);
                 } else if (flowNode instanceof Gateway) {
                     Gateway gateway = (Gateway) flowNode;
                     text.append("Am Gateway (")
@@ -243,7 +244,13 @@ public class App {
     }
     
     
-   
+    private static void appendIoSpecification(Task task, StringBuilder sb) {
+        IoSpecification ioSpec = task.getIoSpecification();
+        if (ioSpec != null) {
+            ioSpec.getDataInputs().forEach(input -> sb.append("  Eingabedaten: ").append(input.getName()).append("\n"));
+            ioSpec.getDataOutputs().forEach(output -> sb.append("  Ausgabedaten: ").append(output.getName()).append("\n"));
+        }
+    }
     
 
 

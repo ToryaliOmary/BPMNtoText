@@ -3,6 +3,8 @@ Die Aufgabe 'BPMN erstellen' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'Zum Erstellen des BPMN Prozesses wird die Plattform Aeneis verwendet. Dazu wird der Webmodeller geöffnet und der Prozess modelliert. '
   Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Gateway eingebaut?' übergeben.
+  Eingabedaten: Feedback
+  Ausgabedaten: Feedbackbogen
 Am Gateway (exclusiveGateway) namens "Gateway eingebaut?" kann der Prozess unterschiedliche Wege gehen, abhängig von der Entscheidungslogik.
   Die Entscheidung 'Ja' führt zu: BPMN übersetzen.
   Die Entscheidung 'Nein' führt zu: Gateway einbauen.
