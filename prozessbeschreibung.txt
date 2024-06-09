@@ -1,14 +1,32 @@
-Der Prozess beginnt mit dem Start-Ereignis: "Start event".
-Die Aufgabe 'Feedback einholen' wird von der Rolle 'IT Consultant' durchgeführt.
-  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Feedback zusammenfassen' übergeben.
-Die Aufgabe 'Feedback zusammenfassen' wird von der Rolle 'IT Consultant' durchgeführt.
-  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Handlungen ableiten' übergeben.
-Die Aufgabe 'Handlungen ableiten' wird von der Rolle 'IT Consultant' durchgeführt.
-  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Lösungsvorschläge dokumentieren' übergeben.
-Die Aufgabe 'Lösungsvorschläge dokumentieren' wird von der Rolle 'IT Consultant' durchgeführt.
-  Diese Aufgabe umfasst {kurze Beschreibung der Aufgabe}.
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'dem nächsten Schritt' übergeben.
-  Der Prozess endet mit dem End-Ereignis "End Event".
+Der Prozess beginnt mit dem Start-Ereignis: "Auftrag erhalten".
+Die Aufgabe 'BPMN erstellen' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'Zum Erstellen des BPMN Prozesses wird die Plattform Aeneis verwendet. Dazu wird der Webmodeller geöffnet und der Prozess modelliert. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Gateway eingebaut?' übergeben.
+Am Gateway (exclusiveGateway) namens "Gateway eingebaut?" kann der Prozess unterschiedliche Wege gehen, abhängig von der Entscheidungslogik.
+  Die Entscheidung 'Ja' führt zu: BPMN übersetzen.
+  Die Entscheidung 'Nein' führt zu: Gateway einbauen.
+Die Aufgabe 'BPMN übersetzen' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'Der prozess wird in die Anwednung BPMNToText eingegeben. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN exportieren' übergeben.
+Die Aufgabe 'BPMN exportieren' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'nachdem das Dokemnt übersetzt wird, wird es exportiert. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN übersetzt' übergeben.
+Der Prozess endet mit dem End-Ereignis "BPMN übersetzt".
+Die Aufgabe 'Gateway einbauen' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'Um mehr Komplexität zu schaffen, wird ein Gateway eingebaut. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Gateway einbauen' übergeben.
+   Einem Zwischenereignis vom Typ "Keine EventDefinitions" mit dem Namen "Gateway einbauen" tritt auf.
+Die Aufgabe 'BPMN übersetzen' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'Der prozess wird in die Anwednung BPMNToText eingegeben. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Erfolgsbenachrichtigung' übergeben.
+   Einem Zwischenereignis vom Typ "MessageEventDefinition" mit dem Namen "Erfolgsbenachrichtigung" tritt auf.
+Die Aufgabe 'BPMN esportieren' wird von der Rolle 'IT-Consultant' durchgeführt.
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+   'nachdem das Dokemnt übersetzt wird, wird es exportiert. '
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN übersetzt' übergeben.
+Der Prozess endet mit dem End-Ereignis "BPMN übersetzt".
