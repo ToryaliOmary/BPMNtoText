@@ -1,34 +1,39 @@
-Der Prozess beginnt mit dem Start-Ereignis: "Auftrag erhalten".
+Der Prozess beginnt mit Event ‚Auftrag erhalten‘. Dieses Event setzt die erste Aufgabe ‚BPMN erstellen‘ in Gang.
 Die Aufgabe 'BPMN erstellen' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'Zum Erstellen des BPMN Prozesses wird die Plattform Aeneis verwendet. Dazu wird der Webmodeller geöffnet und der Prozess modelliert. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Gateway eingebaut?' übergeben.
-  Eingabedaten: Feedback
-  Ausgabedaten: Feedbackbogen
-Am Gateway (exclusiveGateway) namens "Gateway eingebaut?" kann der Prozess unterschiedliche Wege gehen, abhängig von der Entscheidungslogik.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Gateway eingebaut?' übergeben.
+  Diese Aufgabe erhält bzw. benötigt folgenden Input: Feedback
+  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: Feedbackbogen
+An dieser Stelle tritt innerhalb des Prozesses ein Gateway bzw. eine Entscheidung vom Typ exclusiveGateway namens "Gateway eingebaut?" auf.
+ Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.
   Die Entscheidung 'Ja' führt zu: BPMN übersetzen.
   Die Entscheidung 'Nein' führt zu: Gateway einbauen.
 Die Aufgabe 'BPMN übersetzen' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'Der prozess wird in die Anwednung BPMNToText eingegeben. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN exportieren' übergeben.
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'BPMN exportieren' übergeben.
 Die Aufgabe 'BPMN exportieren' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'nachdem das Dokemnt übersetzt wird, wird es exportiert. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN übersetzt' übergeben.
-Der Prozess endet mit dem End-Ereignis "BPMN übersetzt".
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'BPMN übersetzt' übergeben.
+Das Element ‚BPMN übersetzt‘ stellt das End-Event des Prozesses dar. Dieses Ereignis tritt ein, nachdem die letzte Aufgabe ‚BPMN übersetzt‘ abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
+
 Die Aufgabe 'Gateway einbauen' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'Um mehr Komplexität zu schaffen, wird ein Gateway eingebaut. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Gateway einbauen' übergeben.
-   Einem Zwischenereignis vom Typ "Keine EventDefinitions" mit dem Namen "Gateway einbauen" tritt auf.
+An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
+  Es folgt ein "Timer-Event" mit dem Namen "2 Wochen.
+  Anschließend wird der Prozess mit dem nachfolgenden Element ‚BPMN übersetzen‘ weitergeführt.
 Die Aufgabe 'BPMN übersetzen' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'Der prozess wird in die Anwednung BPMNToText eingegeben. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'Erfolgsbenachrichtigung' übergeben.
-   Einem Zwischenereignis vom Typ "MessageEventDefinition" mit dem Namen "Erfolgsbenachrichtigung" tritt auf.
+An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
+  Es folgt ein "Message-Event" mit dem Namen "Erfolgsbenachrichtigung.
+  Anschließend wird der Prozess mit dem nachfolgenden Element ‚BPMN esportieren‘ weitergeführt.
 Die Aufgabe 'BPMN esportieren' wird von der Rolle 'IT-Consultant' durchgeführt.
   Diese Aufgabe ist folgendermaßen beschrieben: 
    'nachdem das Dokemnt übersetzt wird, wird es exportiert. '
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an 'BPMN übersetzt' übergeben.
-Der Prozess endet mit dem End-Ereignis "BPMN übersetzt".
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'BPMN übersetzt' übergeben.
+Das Element ‚BPMN übersetzt‘ stellt das End-Event des Prozesses dar. Dieses Ereignis tritt ein, nachdem die letzte Aufgabe ‚BPMN übersetzt‘ abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
+

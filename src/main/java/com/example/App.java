@@ -1,13 +1,14 @@
 package com.example;
 
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.TimerEventDefinition;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.*;
 import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.xml.instance.DomElement;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-import org.camunda.bpm.model.xml.type.ModelElementType;
+import org.activiti.bpmn.model.TimerEventDefinition;
+
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,19 +19,17 @@ import java.util.*;
 public class App {
     public static void main(String[] args) {
         // Parameter für die Datei und die Prozess-ID
-        String filePath = "src/main/export-neu.bpmn";
+        String filePath = "src/main/ressources/ZweiterProzess7.bpmn";
         String processId = "_fcda809a-3b73-4ce1-b18a-43a8fc8d8ee9"; // Ändere dies auf die richtige Prozess-ID
 
         // Lade das BPMN-Diagramm
         BpmnModelInstance modelInstance = loadBpmnModel(filePath);
         if (modelInstance != null){
-            debugIntermediateCatchEvents(modelInstance);
             System.out.println("laden erfolgreich");
         } else {
             System.out.println("Fehler beim laden");
         }
         
-
         // Extrahiere den Prozess
         Process process = extractProcess(modelInstance, processId);
         if (process == null) return;
@@ -63,6 +62,7 @@ public class App {
         return Bpmn.readModelFromFile(file);
     }
 
+    ///// Extrahiere den Prozess
     private static Process extractProcess(BpmnModelInstance modelInstance, String processId) {
         Process process = (Process) modelInstance.getModelElementById(processId);
         if (process == null) {
@@ -70,6 +70,8 @@ public class App {
         }
         return process;
     }
+
+    /// findet Start-Event
 
     private static StartEvent findStartEvent(Process process) {
         Collection<FlowElement> flowElements = process.getFlowElements();
@@ -82,23 +84,9 @@ public class App {
         return null;
     }
 
-    //private static void printSequenceFlowDetails(Process process) {
-        //for (FlowElement element : process.getFlowElements()) {
-            //if (element instanceof SequenceFlow) {
-                ///SequenceFlow flow = (SequenceFlow) element;
-                //System.out.println("SequenceFlow ID: " + flow.getId());
-                //System.out.println("Source: " + flow.getSource().getName());
-                //System.out.println("Target: " + flow.getTarget().getName());
-                //if (flow.getName() != null && !flow.getName().isEmpty()) {
-                    //System.out.println("Label: " + flow.getName());
-                //} else {
-                    //System.out.println("Label: none");
-                //}
-                //System.out.println("Condition: " + (flow.getConditionExpression() != null ? flow.getConditionExpression().getTextContent() : "none"));
-                //System.out.println("-------------");
-            //}
-        //}
-    //}
+
+
+    ///// Erstellen des Fließtextes
 
     private static String generateProcessDescription(BpmnModelInstance modelInstance, Process process) {
         StringBuilder text = new StringBuilder();
@@ -117,41 +105,57 @@ public class App {
             // Verarbeite jedes Flow-Element in der Lane
             for (FlowNode flowNode : laneFlowNodes) {
                 if (flowNode instanceof StartEvent) {
-                    text.append("Der Prozess beginnt mit dem Start-Ereignis: \"")
-                        .append(flowNode.getName())
-                        .append("\".\n");
-                } else if (flowNode instanceof EndEvent) {
-                    text.append("Der Prozess endet mit dem End-Ereignis \"")
-                        .append(flowNode.getName())
-                        .append("\".\n");
+                    // Textbaustein für StartEvent
+                    StartEvent startEvent = (StartEvent) flowNode;
+                    String nextTaskName = getNextElementName(startEvent);
+                    text.append(String.format("Der Prozess beginnt mit Event ‚%s‘. Dieses Event setzt die erste Aufgabe ‚%s‘ in Gang.\n", startEvent.getName(), nextTaskName));
+                }else if (flowNode instanceof EndEvent) {
+                    // Textbaustein für EndEvent
+                    EndEvent endEvent = (EndEvent) flowNode;
+                    String previousTaskName = getPreviousElementName(flowNode);
+                    text.append(String.format("Das Element ‚%s‘ stellt das End-Event des Prozesses dar. Dieses Ereignis tritt ein, nachdem die letzte Aufgabe ‚%s‘ abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.\n\n", endEvent.getName(), previousTaskName));
                 } else if (flowNode instanceof IntermediateCatchEvent) {
                     IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
-                    text.append("   Einem Zwischenereignis vom Typ \"")
+                    String nextTaskName = getNextElementName(intermediateCatchEvent);
+                    text.append("  Es folgt ein \"")
                         .append(getEventType(intermediateCatchEvent))
                         .append("\" mit dem Namen \"")
                         .append(intermediateCatchEvent.getName())
-                        .append("\" tritt auf.\n");
-                } else if (flowNode instanceof Task) {
-                    Task task = (Task) flowNode;
-
-                    // Extrahiere nur den HTML-Textinhalt
-                    String taskDescription = extractHtmlContent(task);
-
-                    String nextElement = getNextElementName(task);
-                    text.append("Die Aufgabe '")
-                        .append(task.getName())
-                        .append("' wird von der Rolle '")
-                        .append(lane.getName())
-                        .append("' durchgeführt.\n  Diese Aufgabe ist folgendermaßen beschrieben: \n   '" + taskDescription + "'")
-                        .append("\n  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an '" + nextElement + "' übergeben.\n");
-                        appendIoSpecification(task, text);
-                } else if (flowNode instanceof Gateway) {
+                        .append(String.format(".\n  Anschließend wird der Prozess mit dem nachfolgenden Element ‚%s‘ weitergeführt.\n", nextTaskName));
+                    } else if (flowNode instanceof Task) {
+                        Task task = (Task) flowNode;
+                        String taskDescription = extractHtmlContent(task);  // Extract only the HTML text content
+                        FlowNode nextElement = getNextElement(task);  // Determine the next element
+                    
+                        // Build the text depending on the type of the next element
+                        text.append("Die Aufgabe '")
+                            .append(task.getName())
+                            .append("' wird von der Rolle '")
+                            .append(lane.getName())
+                            .append("' durchgeführt.\n  Diese Aufgabe ist folgendermaßen beschrieben: \n   '")
+                            .append(taskDescription)
+                            .append("'");
+                    
+                        // Check if the next element is an event
+                        if (nextElement instanceof IntermediateCatchEvent) {
+                            text.append("\nAn dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.\n");
+                        } else if (nextElement != null) {  // Ensuring nextElement is not null before calling getName()
+                            text.append("\n  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element '")
+                                .append(nextElement.getName())
+                                .append("' übergeben.\n");
+                        } else if (nextElement instanceof Gateway){
+                            text.append("");
+                        } else {
+                            text.append("\n  Es gibt keinen definierten nächsten Schritt nach dieser Aufgabe.\n");
+                        }
+                        appendIoSpecification(task, text);  // Add Input/Output specification if available
+                    } else if (flowNode instanceof Gateway) {
                     Gateway gateway = (Gateway) flowNode;
-                    text.append("Am Gateway (")
+                    text.append("An dieser Stelle tritt innerhalb des Prozesses ein Gateway bzw. eine Entscheidung vom Typ ")
                         .append(gateway.getElementType().getTypeName())
-                        .append(") namens \"")
+                        .append(" namens \"")
                         .append(gateway.getName())
-                        .append("\" kann der Prozess unterschiedliche Wege gehen, abhängig von der Entscheidungslogik.\n");
+                        .append("\" auf.\n Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.\n");
                     Collection<SequenceFlow> outgoing = gateway.getOutgoing();
                     for (SequenceFlow flow : outgoing) {
                         String condition = "Unbekannt";
@@ -169,28 +173,86 @@ public class App {
         return text.toString();
     }
 
-    private static String getEventType(IntermediateCatchEvent event) {
-        if (event.getEventDefinitions().isEmpty()) {
-            return "Keine EventDefinitions";
+    private static FlowNode getNextElement(Task task) {
+        if (!task.getOutgoing().isEmpty()) {
+            SequenceFlow flow = task.getOutgoing().iterator().next();  // Getting the first outgoing flow
+            return flow.getTarget();  // Returning the target of this flow
         }
-    
-        StringBuilder eventTypes = new StringBuilder();
-        for (EventDefinition eventDefinition : event.getEventDefinitions()) {
-            String simpleName = eventDefinition.getClass().getSimpleName();
-            simpleName = simpleName.replace("Impl", ""); // Entfernt Impl, falls die Namen der Klassen Impl enthalten
-            appendEventType(eventTypes, simpleName);
-        }
-        return eventTypes.toString();
-    }
-    
-    private static void appendEventType(StringBuilder builder, String eventType) {
-        if (builder.length() > 0) {
-            builder.append(", ");
-        }
-        builder.append(eventType);
+        return null;  // Return null if there are no outgoing flows
     }
     
 
+    private static String getNextElementName(FlowNode node) {
+        for (SequenceFlow flow : node.getOutgoing()) {
+            if (flow.getTarget() != null) {
+                return flow.getTarget().getName();
+            }
+        }
+        return "dem nächsten Schritt";
+    }
+
+    private static String getPreviousElementName(FlowNode node) {
+        for (SequenceFlow flow : node.getIncoming()) {
+            if (flow.getTarget() != null) {
+                return flow.getTarget().getName();
+            }
+        }
+        return "dem nächsten Schritt";
+    }
+
+    
+    ///// Übersetzen Events
+
+    private static String getEventType(IntermediateCatchEvent event) {
+    // Prüfen, ob Event-Definitionen vorhanden sind
+    if (event.getEventDefinitions().isEmpty()) {
+        // Zugriff auf das XML-Element des Events
+        DomElement domElement = event.getDomElement();
+        Optional<DomElement> definitionsElement = domElement.getChildElements().stream()
+            .filter(e -> e.getLocalName().contains("EventDefinition")) // Suche nach Elementen, die "EventDefinition" im Namen haben
+            .findFirst();
+
+        if (definitionsElement.isPresent()) {
+            String localName = definitionsElement.get().getLocalName();
+            switch (localName) {
+                case "timerEventDefinition":
+                    return "Timer-Event";
+                case "messageEventDefinition":
+                    return "Message-Event";
+                // Add other cases as necessary
+                default:
+                    return "Unbekanntes Event (" + localName + ")";
+            }
+        } else {
+        return "CatchEvent (keine spezifische Event-Definition)";
+        }
+    }
+    
+    // StringBuilder für Event-Typen
+    StringBuilder eventTypes = new StringBuilder();
+    for (EventDefinition eventDefinition : event.getEventDefinitions()) {
+        String eventTypeName;
+        if (eventDefinition instanceof TimerEventDefinition) {
+            eventTypeName = "Timer-Event";
+        } else if (eventDefinition instanceof MessageEventDefinition) {
+            eventTypeName = "Message-Event";
+        } else {
+            // Use the simple class name as a fallback
+            eventTypeName = eventDefinition.getClass().getSimpleName().replace("Impl", "");
+        }
+
+        if (eventTypes.length() > 0) {
+            eventTypes.append(", ");
+        }
+        eventTypes.append(eventTypeName);
+    }
+        return eventTypes.toString();
+    }
+
+     
+    
+
+    ///// Übersetzen Taskbeschreibung
 
     private static String extractHtmlContent(Task task) {
         StringBuilder htmlContent = new StringBuilder();
@@ -207,52 +269,26 @@ public class App {
         return htmlContent.toString();
     }
 
-    private static String getNextElementName(FlowNode node) {
-        for (SequenceFlow flow : node.getOutgoing()) {
-            if (flow.getTarget() != null) {
-                return flow.getTarget().getName();
-            }
-        }
-        return "dem nächsten Schritt";
-    }
 
-    private static void debugIntermediateCatchEvents(BpmnModelInstance modelInstance) {
-        ModelElementType eventType = modelInstance.getModel().getType(IntermediateCatchEvent.class);
-        Collection<ModelElementInstance> elements = modelInstance.getModelElementsByType(eventType);
-    
-        if (elements.isEmpty()) {
-            System.out.println("Keine IntermediateCatchEvents gefunden.");
-        }
-    
-        for (ModelElementInstance elementInstance : elements) {
-            IntermediateCatchEvent event = (IntermediateCatchEvent) elementInstance;
-            System.out.println("IntermediateCatchEvent ID: " + event.getId());
-            boolean foundTimer = false;
-    
-            for (EventDefinition eventDefinition : event.getEventDefinitions()) {
-                System.out.println("  Gefundene EventDefinition: " + eventDefinition.getClass().getSimpleName());
-                if (eventDefinition instanceof TimerEventDefinition) {
-                    System.out.println("    TimerEvent ist im Prozess definiert.");
-                    foundTimer = true;
-                }
-            }
-
-            if (!foundTimer) {
-                System.out.println("    Kein TimerEvent für dieses IntermediateCatchEvent definiert.");
-            }
-        }
-    }
-    
+   
+    ///// Übersetzen Input und Output für Tasks
     
     private static void appendIoSpecification(Task task, StringBuilder sb) {
         IoSpecification ioSpec = task.getIoSpecification();
         if (ioSpec != null) {
-            ioSpec.getDataInputs().forEach(input -> sb.append("  Eingabedaten: ").append(input.getName()).append("\n"));
-            ioSpec.getDataOutputs().forEach(output -> sb.append("  Ausgabedaten: ").append(output.getName()).append("\n"));
+            ioSpec.getDataInputs().forEach(input -> sb
+                .append("  Diese Aufgabe erhält bzw. benötigt folgenden Input: ")
+                .append(input.getName())
+                .append("\n"));
+            ioSpec.getDataOutputs().forEach(output -> sb
+                .append("  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: ")
+                .append(output.getName())
+                .append("\n"));
         }
     }
     
 
+    ///// Schreiben der Textdatei
 
     private static void writeToFile(String filePath, String content) {
         File outputFile = new File(filePath);
@@ -260,6 +296,26 @@ public class App {
             writer.write(content);
         } catch (IOException e) {
             System.err.println("Fehler beim Schreiben der Datei: " + e.getMessage());
+        }
+    }
+
+
+    ///// Debug
+    private static void printSequenceFlowDetails(Process process) {
+        for (FlowElement element : process.getFlowElements()) {
+            if (element instanceof SequenceFlow) {
+                SequenceFlow flow = (SequenceFlow) element;
+                System.out.println("SequenceFlow ID: " + flow.getId());
+                System.out.println("Source: " + flow.getSource().getName());
+                System.out.println("Target: " + flow.getTarget().getName());
+                if (flow.getName() != null && !flow.getName().isEmpty()) {
+                    System.out.println("Label: " + flow.getName());
+                } else {
+                    System.out.println("Label: none");
+                }
+                System.out.println("Condition: " + (flow.getConditionExpression() != null ? flow.getConditionExpression().getTextContent() : "none"));
+                System.out.println("-------------");
+            }
         }
     }
 }
