@@ -1,0 +1,73 @@
+Der Prozess beginnt mit Event 'Kunden hat Feedbacks gegeben'. Dieses Event setzt die erste Aufgabe 'Feedback einholen' in Gang.
+
+ Die Aufgabe 'Feedback einholen' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Es wird mit jedem beteiligten Kunden gesprochen und Feedback eingeholt.'. 
+  Diese Aufgabe erhält bzw. benötigt folgenden Input: 'Protokoll' 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Es folgt ein Gateway vom Typ exclusiveGateway namens 'Feedback eingeholt?'. 
+ Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.
+  Die Entscheidung 'Ja' führt zu: Feedback zusammenfassen.
+  Die Entscheidung 'Nein' führt zu: Feedback erneut einholen.
+
+ Die Aufgabe 'Feedback zusammenfassen' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Das gesammelte Feedback wird zusammengefasst. Rückmeldungen, die mehrfach vorkamen, sollen in der Sammlung nicht mehrfach vorkommen.'. 
+  Diese Aufgabe erhält bzw. benötigt folgenden Input: 'Feedback' 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Handlungen ableiten' übergeben.
+ 
+ Die Aufgabe 'Handlungen ableiten' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Mit dem gesammelten Feedback als Grundlage, soll überlegt werden, wie der Prozess verbessert werden kann.'. 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Lösungsvorschläge dokumentieren' übergeben.
+ 
+ Die Aufgabe 'Lösungsvorschläge dokumentieren' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Die gefundenen Handlungen/Lösungen, sollen nun dokumentiert werden, damit sich eine andere Abteilung das übernehmen kann.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
+ Es folgt ein 'Timer-Event' mit dem Namen '2 Wochen' 
+  Dieses Event ist folgendermaßen beschrieben:
+  'eine Wartezeit von 2 Wochen'.
+ Anschließend wird der Prozess fortgesetzt.
+
+ Es folgt ein Gateway vom Typ parallelGateway namens 'Verzweigung'. 
+ Nun werden parallel folgende Tasks durchgeführt: 
+  Task: Dokument ablegen
+  Task: Lösungsvorschläge senden
+ 
+ Die Aufgabe 'Dokument ablegen' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Das zugehörige Dokument muss im Projektordner angelegt werden.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Hier schließt sich das zuvor geöffnete parallele Gateway '%s' wieder.
+
+ Die Aufgabe 'Lösungsvorschläge senden' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Lösungsvorschläge werden an die Mitarbeiter des Fachbereichs versendet.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Die Aufgabe 'Feedback erneut einholen' wird von der Rolle 'IT-Consultant' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'hier steht eine beschreibung'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
+ Es folgt ein 'Timer-Event' mit dem Namen '1 Woche vergangen' 
+  Dieses Event ist folgendermaßen beschrieben:
+  'Der Consultant hat 1 Woche Zeit, weiteres Feedback einzuholen  
+           '.
+ Anschließend wird der Prozess fortgesetzt.
+
+ Die Aufgabe 'Lösungsvorschläge bekommen' wird von der Rolle 'Mitarbeiter/in Entwickler' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Der Entwickler erhält die Lösungsvorschläge.'. 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Lösungsvorschläge implementieren' übergeben.
+ 
+ Die Aufgabe 'Lösungsvorschläge implementieren' wird von der Rolle 'Mitarbeiter/in Entwickler' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Der Entwickler wird das Produkt gemäß den Lösungsvorschlägen anpassen.'. 
+
+ Das Element 'Das Produkt wurde nach Feedbacks von Kunden angepasst' stellt das End-Event des Prozesses dar. 
+ Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Lösungsvorschläge implementieren' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.

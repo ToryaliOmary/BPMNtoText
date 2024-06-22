@@ -8,13 +8,9 @@ public class IoSpecificationUtils {
         IoSpecification ioSpec = task.getIoSpecification();
         if (ioSpec != null) {
             ioSpec.getDataInputs().forEach(input -> sb
-                    .append("  Diese Aufgabe erhält bzw. benötigt folgenden Input: ")
-                    .append(input.getName())
-                    .append("\n"));
+                    .append(String.format("  Diese Aufgabe erhält bzw. benötigt folgenden Input: '%s' \n", input.getName())));
             ioSpec.getDataOutputs().forEach(output -> sb
-                    .append("  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: ")
-                    .append(output.getName())
-                    .append("\n"));
+                    .append(String.format("  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: '%s' \n ", output.getName())));
         }
     }
 }

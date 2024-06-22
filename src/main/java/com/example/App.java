@@ -6,8 +6,8 @@ import org.camunda.bpm.model.bpmn.instance.StartEvent;
 
 public class App {
     public static void main(String[] args) {
-        String filePath = "src/main/ressources/ZweiterProzess7.bpmn";
-        String processId = "_fcda809a-3b73-4ce1-b18a-43a8fc8d8ee9";
+        String filePath = "src/main/ressources/neu.bpmn";
+        String processId = "_5bf37195-e07f-4dd3-af04-ae9773959c66";
 
         BpmnModelInstance modelInstance = BpmnLoader.loadBpmnModel(filePath);
         if (modelInstance != null) {

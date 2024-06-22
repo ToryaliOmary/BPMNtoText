@@ -21,19 +21,19 @@ public class TaskUtils {
                 return flow.getTarget().getName();
             }
         }
-        return "dem nächsten Schritt";
+        return null;
     }
 
     public static String getPreviousElementName(FlowNode node) {
         for (SequenceFlow flow : node.getIncoming()) {
-            if (flow.getTarget() != null) {
-                return flow.getTarget().getName();
+            if (flow.getSource() != null) {
+                return flow.getSource().getName();
             }
         }
-        return "dem nächsten Schritt";
+        return null;
     }
 
-    public static String extractHtmlContent(Task task) {
+    public static String extractHtmlContentTask(Task task) {
         StringBuilder htmlContent = new StringBuilder();
         Set<String> uniqueContents = new HashSet<>();
         for (ModelElementInstance childElement : task.getChildElementsByType(task.getModelInstance().getModel().getType(Documentation.class))) {
@@ -46,5 +46,36 @@ public class TaskUtils {
             }
         }
         return htmlContent.toString();
+    }
+
+    public static String extractHtmlContentEvent(IntermediateCatchEvent intermediateCatchEvent) {
+        StringBuilder htmlContent = new StringBuilder();
+        Set<String> uniqueContents = new HashSet<>();
+    
+        for (Documentation documentation : intermediateCatchEvent.getDocumentations()) {
+            // Überprüfen, ob das Dokumentationselement das Attribut textFormat="text/html" hat
+            if ("text/html".equals(documentation.getAttributeValue("textFormat"))) {
+                String content = documentation.getTextContent().trim();
+                // Überprüfen Sie, ob der Inhalt nicht leer ist und ob er bereits hinzugefügt wurde
+                if (!content.isEmpty() && uniqueContents.add(content)) {
+                    htmlContent.append(content).append(" ");
+                }
+            }
+        }
+    
+        return htmlContent.toString().trim(); // Entferne das letzte Leerzeichen
+    }
+    
+
+    public static String extractHtmlContentGateway(Gateway gateway) {
+        StringBuilder htmlContent = new StringBuilder();
+        Set<String> uniqueContents = new HashSet<>();
+        for (Documentation documentation : gateway.getDocumentations()) {
+            String content = documentation.getTextContent().trim();
+            if (uniqueContents.add(content)) {
+                htmlContent.append(content);
+            }
+        }
+        return htmlContent.toString().trim();
     }
 }

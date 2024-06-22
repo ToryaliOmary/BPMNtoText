@@ -1,10 +1,10 @@
 package com.example;
 
-import org.activiti.bpmn.model.MessageEventDefinition;
 import org.camunda.bpm.model.bpmn.instance.EventDefinition;
 import org.camunda.bpm.model.bpmn.instance.IntermediateCatchEvent;
 import org.camunda.bpm.model.xml.instance.DomElement;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.MessageEventDefinition;
 
 import java.util.Optional;
 

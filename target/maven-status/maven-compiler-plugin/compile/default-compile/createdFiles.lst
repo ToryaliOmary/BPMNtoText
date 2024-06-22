@@ -1,0 +1,10 @@
+com\example\ElementProcessor.class
+com\example\EventUtils.class
+com\example\App.class
+com\example\BpmnLoader.class
+com\example\DebugUtil.class
+com\example\FileWriterUtil.class
+com\example\ProcessExtractor.class
+com\example\DescriptionGenerator.class
+com\example\IoSpecificationUtils.class
+com\example\TaskUtils.class
