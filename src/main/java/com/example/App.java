@@ -7,7 +7,7 @@ import org.camunda.bpm.model.bpmn.instance.StartEvent;
 public class App {
     public static void main(String[] args) {
         String filePath = "src/main/ressources/neu.bpmn";
-        String processId = "_5bf37195-e07f-4dd3-af04-ae9773959c66";
+        String processId = "_70e46d4c-fe72-426c-97d7-1cccda37cd11";
 
         BpmnModelInstance modelInstance = BpmnLoader.loadBpmnModel(filePath);
         if (modelInstance != null) {
@@ -24,6 +24,7 @@ public class App {
         if (startEvent == null) return;
 
         String processDescription = DescriptionGenerator.generateProcessDescription(modelInstance, process);
+
         String outputFilePath = "prozessbeschreibung.txt";
         FileWriterUtil.writeToFile(outputFilePath, processDescription);
 

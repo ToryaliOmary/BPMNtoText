@@ -47,7 +47,7 @@ public class ElementProcessor {
                                 .append("\n ");
                         }
                     } else if (gateway.getIncoming().size() >= 2) {
-                        text.append("\n Hier schließt sich das zuvor geöffnete parallele Gateway '%s' wieder.\n");
+                        text.append("\n Hier schließt sich das zuvor geöffnete parallele Gateway wieder.\n");
                     }
                     break;
                 
