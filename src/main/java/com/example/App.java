@@ -23,11 +23,25 @@ public class App {
         StartEvent startEvent = ProcessExtractor.findStartEvent(process);
         if (startEvent == null) return;
 
-        String processDescription = DescriptionGenerator.generateProcessDescription(modelInstance, process);
+        int totalElements = DescriptionGenerator.countTotalElements(modelInstance);
+        DescriptionGenerator descriptionGenerator = new DescriptionGenerator();
+        String processDescription = descriptionGenerator.generateProcessDescription(modelInstance, startEvent);
 
         String outputFilePath = "prozessbeschreibung.txt";
         FileWriterUtil.writeToFile(outputFilePath, processDescription);
 
+        int processedElements = descriptionGenerator.getProcessedElementCount();
+
         System.out.println("Der Text wurde in " + outputFilePath + " gespeichert.");
+        System.out.println("Im Prozess sind " + totalElements + " Elemente.");
+        System.out.println("In der Prozessbeschreibung sind " + processedElements + " Elemente.");
+
+        if (!descriptionGenerator.getMissingElements().isEmpty()) {
+            System.out.println("Fehlende Elemente:");
+            descriptionGenerator.getMissingElements().forEach(element ->
+                    System.out.println(element.getElementType().getTypeName() + " - " + element.getName()));
+        } else {
+            System.out.println("Alle Elemente wurden aufgenommen.");
+        }
     }
 }

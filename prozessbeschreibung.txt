@@ -1,37 +1,4 @@
-
- Die Aufgabe 'Produktstest bekomen' wird von der Rolle 'Kunde' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Testkunden enthalten das neue Produkt'. 
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Feedbacks zurück senden' übergeben.
- 
- Die Aufgabe 'Feedbacks zurück senden' wird von der Rolle 'Kunde' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Nachdem die Testkunden das Produkt getestet haben, wird ihr Feedback zurückgeschickt.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
- Die Aufgabe 'Das Produkt an Testkunden schicken.' wird von der Rolle 'Marketing' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Das neue Produkt wird an Testkunden geschickt.'. 
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Produktstest bekomen' übergeben.
- 
- Es folgt ein 'MessageEventDefinition' mit dem Namen 'Testfeedback erhalten' 
-  Dieses Event ist folgendermaßen beschrieben:
-  ''.
- Anschließend wird der Prozess fortgesetzt.
-
- Die Aufgabe 'Marketingstrategie entwickeln' wird von der Rolle 'Marketing' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Eine Marketingstrategie für das neue Produkt wird entwickelt.'. 
-  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: 'Marketingplan' 
-   Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Markteinführung' übergeben.
- 
- Die Aufgabe 'Markteinführung' wird von der Rolle 'Marketing' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Das Produkt wird freigegeben und auf den Markt gebracht.'. 
-
- Das Element 'Produkt erfolgreich eingeführt' stellt das End-Event des Prozesses dar. 
- Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Markteinführung' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
-Der Prozess beginnt mit Event 'neue Idee beitretten'. Dieses Event setzt die erste Aufgabe 'Produktidee bewerten' in Gang.
+Der Prozess beginnt mit Event 'neue Idee beitretten' in der Lane 'Produktionmanager'. Dieses Event setzt die erste Aufgabe 'Produktidee bewerten' in Gang.
 
  Die Aufgabe 'Produktidee bewerten' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
@@ -75,6 +42,11 @@ Der Prozess beginnt mit Event 'neue Idee beitretten'. Dieses Event setzt die ers
   Diese Aufgabe erstellt bzw. gibt folgenden Output aus: 'Prototyp' 
  
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Die Aufgabe 'Konzept überarbeiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Das Konzept wird basierend auf Feedback überbeitet und erneut überprüft.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Es folgt ein Gateway vom Typ parallelGateway namens 'Verzweigung'. 
  Nun werden parallel folgende Tasks durchgeführt: 
   Task: Prototyp testen
@@ -85,39 +57,22 @@ Der Prozess beginnt mit Event 'neue Idee beitretten'. Dieses Event setzt die ers
   'Der Prototyp wird getestet und auf Fehler überprüft.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
- Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
-
- Es folgt ein Gateway vom Typ exclusiveGateway namens 'hat Prototyp den Test bestanden?'. 
- Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.
-  Die Entscheidung 'Ja' führt zu: Verzweigung.
-  Die Entscheidung 'Nein' führt zu: Konzept überbearbeiten.
-
- Es folgt ein Gateway vom Typ parallelGateway namens 'Verzweigung'. 
- Nun werden parallel folgende Tasks durchgeführt: 
-  Task: Schulung zur Einführung neues Produkts teilnehmen
-  Task: Schulung zur Einführung neues Produkts durchführen.
- 
- Die Aufgabe 'Schulung zur Einführung neues Produkts durchführen.' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Schulung für Mitarbeiter in der Produktion wird durchgeführt, um sie über das neue Produkt  sowie den Produktionsprozess zu informieren.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
- Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
-
- Die Aufgabe 'Konzept überbearbeiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Das erhaltene Konzept wird bearbeitet, um es an das Unternehmen anzupassen.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Die Aufgabe 'Produktionsplan erstellen' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Ein Plan für die Produktion des Produkts wird erstellt.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
+
  Es folgt ein Gateway vom Typ exclusiveGateway namens 'Ist der Produktionsplan machbar?'. 
  Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.
   Die Entscheidung 'ja' führt zu: die Produktionsanlage vorbereiten.
   Die Entscheidung 'nein' führt zu: Protokoll dokumentieren.
+
+ Es folgt ein Gateway vom Typ exclusiveGateway namens 'hat Prototyp den Test bestanden?'. 
+ Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.
+  Die Entscheidung 'Ja' führt zu: Verzweigung.
+  Die Entscheidung 'Nein' führt zu: Konzept überbearbeiten.
 
  Die Aufgabe 'die Produktionsanlage vorbereiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
@@ -128,27 +83,65 @@ Der Prozess beginnt mit Event 'neue Idee beitretten'. Dieses Event setzt die ers
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Es wurde dokumentiert, warum der Produktionsplan nicht machbar oder realistisch ist.'. 
 
- Das Element 'ende' stellt das End-Event des Prozesses dar. 
- Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Protokoll dokumentieren' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
-
- Die Aufgabe 'Konzept überarbeiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Das Konzept wird basierend auf Feedback überbeitet und erneut überprüft.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.Der Prozess beginnt mit Event 'Externes Konzept erhalten'. Dieses Event setzt die erste Aufgabe 'Konzept überbearbeiten' in Gang.
-
+ Es folgt ein Gateway vom Typ parallelGateway namens 'Verzweigung'. 
+ Nun werden parallel folgende Tasks durchgeführt: 
+  Task: Schulung zur Einführung neues Produkts teilnehmen
+  Task: Schulung zur Einführung neues Produkts durchführen.
+ 
  Die Aufgabe 'Konzept überbearbeiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Das erhaltene Konzept wird bearbeitet, um es an das Unternehmen anzupassen.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
- Die Aufgabe 'Anpassungen vornehmen' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Anpassungen am Prototyp basierend auf dem Testfeedback werden vorgenommen.'. 
-  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Marketingstrategie entwickeln' übergeben.
- 
+ Das Element 'ende' in der Lane 'Produktionmanager' stellt das End-Event des Prozesses dar. 
+ Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Protokoll dokumentieren' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
+
  Die Aufgabe 'Schulung zur Einführung neues Produkts teilnehmen' wird von der Rolle 'Mitarbeiter in der Produktion' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Die Mitarbeiter nehmen an der Schulung teil, um über das neue Produkt sowie den Produktionsprozess informiert zu werden.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Die Aufgabe 'Schulung zur Einführung neues Produkts durchführen.' wird von der Rolle 'Produktionmanager' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Schulung für Mitarbeiter in der Produktion wird durchgeführt, um sie über das neue Produkt  sowie den Produktionsprozess zu informieren.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
+
+ Die Aufgabe 'Das Produkt an Testkunden schicken.' wird von der Rolle 'Marketing' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Das neue Produkt wird an Testkunden geschickt.'. 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Produktstest bekomen' übergeben.
+ 
+ Die Aufgabe 'Produktstest bekomen' wird von der Rolle 'Kunde' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Testkunden enthalten das neue Produkt'. 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Feedbacks zurück senden' übergeben.
+ 
+ Die Aufgabe 'Feedbacks zurück senden' wird von der Rolle 'Kunde' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Nachdem die Testkunden das Produkt getestet haben, wird ihr Feedback zurückgeschickt.'. 
+
+ An dieser Stelle tritt innerhalb des Prozesses ein Zwischenereignis auf.
+ Es folgt ein 'MessageEventDefinition' mit dem Namen 'Testfeedback erhalten' in der Lane 'Marketing' 
+  Dieses Event ist folgendermaßen beschrieben:
+  ''.
+ Anschließend wird der Prozess fortgesetzt.
+
+ Die Aufgabe 'Anpassungen vornehmen' wird von der Rolle 'Produktionmanager' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Anpassungen am Prototyp basierend auf dem Testfeedback werden vorgenommen.'. 
+  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Marketingstrategie entwickeln' übergeben.
+ 
+ Die Aufgabe 'Marketingstrategie entwickeln' wird von der Rolle 'Marketing' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Eine Marketingstrategie für das neue Produkt wird entwickelt.'. 
+  Diese Aufgabe erstellt bzw. gibt folgenden Output aus: 'Marketingplan' 
+   Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element 'Markteinführung' übergeben.
+ 
+ Die Aufgabe 'Markteinführung' wird von der Rolle 'Marketing' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Das Produkt wird freigegeben und auf den Markt gebracht.'. 
+
+ Das Element 'Produkt erfolgreich eingeführt' in der Lane 'Marketing' stellt das End-Event des Prozesses dar. 
+ Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Markteinführung' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
