@@ -16,9 +16,6 @@ public class ElementProcessor {
             IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
             String eventDescription = TaskUtils.extractHtmlContentEvent(intermediateCatchEvent);
             text.append(String.format("\n Es folgt ein '%s' mit dem Namen '%s' in der Lane '%s' \n", EventUtils.getEventType(intermediateCatchEvent), intermediateCatchEvent.getName(), lane.getName()));
-            if (eventDescription != null) {
-                text.append(String.format("  Dieses Event ist folgendermaßen beschrieben:\n  '%s'.\n Anschließend wird der Prozess fortgesetzt.\n", eventDescription));
-            }
         } else if (flowNode instanceof Task) {
             Task task = (Task) flowNode;
             String taskDescription = TaskUtils.extractHtmlContentTask(task);
@@ -52,19 +49,25 @@ public class ElementProcessor {
                     break;
 
                 default:
-                    text.append(String.format("\n Es folgt ein Gateway vom Typ %s namens '%s'. \n", gateway.getElementType().getTypeName(), gateway.getName()));
-                    text.append(" Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.\n");
-                    for (SequenceFlow flow : gateway.getOutgoing()) {
-                        String condition = "Unbekannt";
-                        if (flow.getName() != null && !flow.getName().isEmpty()) {
-                            condition = flow.getName();
-                        }
-                        text.append("  Die Entscheidung '")
+
+                    if (gateway.getIncoming().size() >=2){
+                        text.append(String.format("\n Es folgt ein Gateway namens '%s'. \n", gateway.getName()));
+                        text.append(" Dieses Gateway dient dem Zusammenführen verschiedener Pfäde, schließt zuvor geöffnete Gateways und symbolisiert einen Loop. \n");
+                    }else {
+                        text.append(String.format("\n Es folgt ein Gateway vom Typ %s namens '%s'. \n", gateway.getElementType().getTypeName(), gateway.getName()));
+                        text.append(" Abhängig von der Entscheidungslogik kann der Prozess nun unterschiedliche Wege gehen.\n");
+                            for (SequenceFlow flow : gateway.getOutgoing()) {
+                            String condition = "Unbekannt";
+                            if (flow.getName() != null && !flow.getName().isEmpty()) {
+                                condition = flow.getName();
+                         }
+                            text.append("  Die Entscheidung '")
                                 .append(condition).append("' führt zu: ")
                                 .append(flow.getTarget().getName())
                                 .append(".\n");
-                    }
+                        }
                     break;
+                }
             }
         }
     }

@@ -12,6 +12,7 @@ public class DescriptionGenerator {
     private int processedElementCount = 0;
     private List<FlowNode> missingElements = new ArrayList<>();
     private Map<String, Set<String>> nodeToStartEventIdsMap = new HashMap<>();
+    private Map<FlowNode, Set<StartEvent>> convergenceMap = new HashMap<>();
 
     public int getProcessedElementCount() {
         return processedElementCount;
@@ -45,18 +46,30 @@ public class DescriptionGenerator {
             return "Keine Start-Events gefunden.";
         }
 
-        // Kapitel 1 und 2: Beschreibung der Pfade von jedem Start-Event bis zum ersten gemeinsamen Element
-        Map<FlowNode, Set<StartEvent>> convergenceMap = new HashMap<>();
-        int chapterCount = 1;
+        // Berechnung der Konvergenz im Voraus
         for (StartEvent se : startEvents) {
+            generateConvergenceMap(modelInstance, se, allFlowNodes, convergenceMap);
+        }
+
+        // Kapitel 1: Beschreibung der Pfade von einem Start-Event bis zum ersten gemeinsamen Element
+        StartEvent firstStartEvent = startEvents.iterator().next();
+        text.append("Kapitel 1: Von Start-Event '").append(firstStartEvent.getName()).append("' bis zum ersten gemeinsamen Element\n");
+        text.append("----------------\n");
+        FlowNode firstCommonElement = generatePartialDescription(modelInstance, firstStartEvent, allFlowNodes, text, true);
+        text.append("\n\n");
+
+        // Kapitel 2: Beschreibung der Pfade von den anderen Start-Events bis zum ersten gemeinsamen Element
+        int chapterCount = 2;
+        for (StartEvent se : startEvents) {
+            if (se.equals(firstStartEvent)) continue;
             text.append("Kapitel ").append(chapterCount).append(": Von Start-Event '").append(se.getName()).append("' bis zum ersten gemeinsamen Element\n");
-            text.append(generatePartialDescription(modelInstance, se, allFlowNodes, convergenceMap));
+            text.append("----------------\n");
+            generatePartialDescription(modelInstance, se, allFlowNodes, text, true);
             text.append("\n\n");
             chapterCount++;
         }
 
         // Kapitel 3: Beschreibung ab dem ersten gemeinsamen Element
-        FlowNode firstCommonElement = findFirstCommonElement(convergenceMap);
         if (firstCommonElement != null) {
             text.append("Kapitel ").append(chapterCount).append(": Ab dem ersten gemeinsamen Element '").append(firstCommonElement.getName()).append("'\n");
             text.append("----------------\n");
@@ -75,15 +88,35 @@ public class DescriptionGenerator {
         return text.toString();
     }
 
-    private String generatePartialDescription(BpmnModelInstance modelInstance, StartEvent startEvent, Set<FlowNode> allFlowNodes, Map<FlowNode, Set<StartEvent>> convergenceMap) {
-        StringBuilder text = new StringBuilder();
+    private void generateConvergenceMap(BpmnModelInstance modelInstance, StartEvent startEvent, Set<FlowNode> allFlowNodes, Map<FlowNode, Set<StartEvent>> convergenceMap) {
         Set<FlowNode> visitedNodes = new HashSet<>();
         Stack<FlowNode> nodesToProcess = new Stack<>();
         nodesToProcess.push(startEvent);
 
-        boolean commonElementFound = false;
+        while (!nodesToProcess.isEmpty()) {
+            FlowNode currentNode = nodesToProcess.pop();
+            if (visitedNodes.contains(currentNode)) {
+                continue;
+            }
+            visitedNodes.add(currentNode);
 
-        while (!nodesToProcess.isEmpty() && !commonElementFound) {
+            convergenceMap.computeIfAbsent(currentNode, k -> new HashSet<>()).add(startEvent);
+
+            List<FlowNode> nextNodes = currentNode.getOutgoing().stream()
+                    .map(SequenceFlow::getTarget)
+                    .collect(Collectors.toList());
+            Collections.reverse(nextNodes);
+            nodesToProcess.addAll(nextNodes);
+        }
+    }
+
+    private FlowNode generatePartialDescription(BpmnModelInstance modelInstance, StartEvent startEvent, Set<FlowNode> allFlowNodes,
+                                                StringBuilder text, boolean stopAtCommonElement) {
+        Set<FlowNode> visitedNodes = new HashSet<>();
+        Stack<FlowNode> nodesToProcess = new Stack<>();
+        nodesToProcess.push(startEvent);
+
+        while (!nodesToProcess.isEmpty()) {
             FlowNode currentNode = nodesToProcess.pop();
             if (visitedNodes.contains(currentNode)) {
                 continue;
@@ -91,11 +124,9 @@ public class DescriptionGenerator {
             visitedNodes.add(currentNode);
             processedElementCount++;
 
-            convergenceMap.computeIfAbsent(currentNode, k -> new HashSet<>()).add(startEvent);
-            if (convergenceMap.get(currentNode).size() > 1) {
-                text.append("\n Das erste gemeinsame Element ist '").append(currentNode.getName()).append("'.\n");
-                commonElementFound = true;
-                break;
+            if (convergenceMap.get(currentNode).size() > 1 && stopAtCommonElement) {
+                text.append("\nDas erste gemeinsame Element ist '").append(currentNode.getName()).append("'.\n");
+                return currentNode;
             }
 
             Lane lane = findLane(modelInstance, currentNode);
@@ -112,7 +143,7 @@ public class DescriptionGenerator {
             nodesToProcess.addAll(nextNodes);
         }
 
-        return text.toString();
+        return null;
     }
 
     private String generateProcessDescriptionFromStartEvent(BpmnModelInstance modelInstance, FlowNode startNode, Set<FlowNode> allFlowNodes) {
@@ -131,7 +162,7 @@ public class DescriptionGenerator {
 
             nodeToStartEventIdsMap.computeIfAbsent(currentNode.getId(), k -> new HashSet<>()).add(startNode.getId());
             if (nodeToStartEventIdsMap.get(currentNode.getId()).size() > 1) {
-                text.append("\n An dieser Stelle überschneidet sich der Prozess mit dem zuvor beschriebenen.\n");
+                text.append("\nAn dieser Stelle überschneidet sich der Prozess mit dem zuvor beschriebenen.\n");
                 break;
             }
 
@@ -150,15 +181,6 @@ public class DescriptionGenerator {
         }
 
         return text.toString();
-    }
-
-    private FlowNode findFirstCommonElement(Map<FlowNode, Set<StartEvent>> convergenceMap) {
-        for (Map.Entry<FlowNode, Set<StartEvent>> entry : convergenceMap.entrySet()) {
-            if (entry.getValue().size() > 1) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 
     private static Lane findLane(BpmnModelInstance modelInstance, FlowNode flowNode) {
