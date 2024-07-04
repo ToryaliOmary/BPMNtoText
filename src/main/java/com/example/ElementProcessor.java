@@ -16,7 +16,7 @@ public class ElementProcessor {
             IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
             String eventDescription = TaskUtils.extractHtmlContentEvent(intermediateCatchEvent);
             text.append(String.format("\n Es folgt ein '%s' mit dem Namen '%s' in der Lane '%s' \n", EventUtils.getEventType(intermediateCatchEvent), intermediateCatchEvent.getName(), lane.getName()));
-            if (eventDescription != null){
+            if (eventDescription != null) {
                 text.append(String.format("  Dieses Event ist folgendermaßen beschrieben:\n  '%s'.\n Anschließend wird der Prozess fortgesetzt.\n", eventDescription));
             }
         } else if (flowNode instanceof Task) {
@@ -30,7 +30,7 @@ public class ElementProcessor {
             } else if (nextElement instanceof Gateway) {
                 IoSpecificationUtils.appendIoSpecification(task, text);
                 text.append("\n An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.");
-            } else if (nextElement instanceof Task){
+            } else if (nextElement instanceof Task) {
                 IoSpecificationUtils.appendIoSpecification(task, text);
                 text.append(String.format("  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element '%s' übergeben.\n ", nextElement.getName()));
             }
@@ -82,7 +82,7 @@ public class ElementProcessor {
             IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
             String eventDescription = TaskUtils.extractHtmlContentEvent(intermediateCatchEvent);
             text.append(String.format("\n Es folgt ein '%s' mit dem Namen '%s' \n", EventUtils.getEventType(intermediateCatchEvent), intermediateCatchEvent.getName()));
-            if (eventDescription != null){
+            if (eventDescription != null) {
                 text.append(String.format("  Dieses Event ist folgendermaßen beschrieben:\n  '%s'.\n Anschließend wird der Prozess fortgesetzt.\n", eventDescription));
             }
         } else if (flowNode instanceof Task) {
@@ -96,7 +96,7 @@ public class ElementProcessor {
             } else if (nextElement instanceof Gateway) {
                 IoSpecificationUtils.appendIoSpecification(task, text);
                 text.append("\n An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.");
-            } else if (nextElement instanceof Task){
+            } else if (nextElement instanceof Task) {
                 IoSpecificationUtils.appendIoSpecification(task, text);
                 text.append(String.format("  Nach Abschluss dieser Aufgabe werden die Ergebnisse/Daten an das nächste Element '%s' übergeben.\n ", nextElement.getName()));
             }
