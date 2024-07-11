@@ -3,12 +3,13 @@ package com.example;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.*;
+import org.camunda.bpm.model.xml.type.ModelElementType;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
         String filePath = "src/main/ressources/neu.bpmn";
-        String processId = "_70e46d4c-fe72-426c-97d7-1cccda37cd11";
 
         BpmnModelInstance modelInstance = BpmnLoader.loadBpmnModel(filePath);
         if (modelInstance != null) {
@@ -18,8 +19,11 @@ public class App {
             return;
         }
 
-        Process process = ProcessExtractor.extractProcess(modelInstance, processId);
-        if (process == null) return;
+        Process process = extractFirstProcess(modelInstance);
+        if (process == null) {
+            System.out.println("Kein Prozess in der Datei gefunden.");
+            return;
+        }
 
         int totalElements = DescriptionGenerator.countTotalElements(modelInstance);
         DescriptionGenerator descriptionGenerator = new DescriptionGenerator();
@@ -42,5 +46,17 @@ public class App {
         } else {
             System.out.println("Alle Elemente wurden aufgenommen.");
         }
+    }
+
+    private static Process extractFirstProcess(BpmnModelInstance modelInstance) {
+        ModelElementType processType = modelInstance.getModel().getType(Process.class);
+        Collection<Process> processes = modelInstance.getModelElementsByType(processType).stream()
+                .filter(Process.class::isInstance)
+                .map(Process.class::cast)
+                .collect(Collectors.toList());
+        if (processes.isEmpty()) {
+            return null;
+        }
+        return processes.iterator().next();
     }
 }
