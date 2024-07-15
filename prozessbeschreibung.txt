@@ -60,7 +60,6 @@ Kapitel 3: Ab dem ersten gemeinsamen Element 'Verzweigung'
   'Ein erster Prototyp des Produkts wird entwickelt.'. 
   Diese Aufgabe erstellt bzw. gibt folgenden Output aus: 'Prototyp' 
  
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Es folgt ein Gateway vom Typ parallelGateway namens 'Verzweigung'. 
  Nun werden parallel folgende Tasks durchgeführt: 
   Task: Prototyp testen
@@ -69,6 +68,10 @@ Kapitel 3: Ab dem ersten gemeinsamen Element 'Verzweigung'
  Die Aufgabe 'Prototyp testen' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Der Prototyp wird getestet und auf Fehler überprüft.'. 
+
+ Die Aufgabe 'Produktionsplan erstellen' wird von der Rolle 'Produktionmanager' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Ein Plan für die Produktion des Produkts wird erstellt.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
@@ -83,11 +86,14 @@ Kapitel 3: Ab dem ersten gemeinsamen Element 'Verzweigung'
   Task: Schulung zur Einführung neues Produkts teilnehmen
   Task: Schulung zur Einführung neues Produkts durchführen.
  
- Die Aufgabe 'Schulung zur Einführung neues Produkts teilnehmen' wird von der Rolle 'Mitarbeiter in der Produktion' durchgeführt. 
+ Die Aufgabe 'Schulung zur Einführung neues Produkts teilnehmen' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Die Mitarbeiter nehmen an der Schulung teil, um über das neue Produkt sowie den Produktionsprozess informiert zu werden.'. 
 
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
+ Die Aufgabe 'Schulung zur Einführung neues Produkts durchführen.' wird von der Rolle 'Produktionmanager' durchgeführt. 
+  Diese Aufgabe ist folgendermaßen beschrieben: 
+  'Schulung für Mitarbeiter in der Produktion wird durchgeführt, um sie über das neue Produkt  sowie den Produktionsprozess zu informieren.'. 
+
  Hier schließt sich das zuvor geöffnete parallele Gateway wieder.
 
  Die Aufgabe 'Das Produkt an Testkunden schicken.' wird von der Rolle 'Marketing' durchgeführt. 
@@ -125,19 +131,9 @@ Kapitel 3: Ab dem ersten gemeinsamen Element 'Verzweigung'
  Das Element 'Produkt erfolgreich eingeführt' in der Lane 'Marketing' stellt das End-Event des Prozesses dar. 
  Dieses Ereignis tritt ein, nachdem die letzte Aufgabe 'Markteinführung' abgeschlossen wurde, und signalisiert das Abschließen des Gesamtprozesses.
 
- Die Aufgabe 'Schulung zur Einführung neues Produkts durchführen.' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Schulung für Mitarbeiter in der Produktion wird durchgeführt, um sie über das neue Produkt  sowie den Produktionsprozess zu informieren.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Die Aufgabe 'Konzept überbearbeiten' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Das erhaltene Konzept wird bearbeitet, um es an das Unternehmen anzupassen.'. 
-
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
- Die Aufgabe 'Produktionsplan erstellen' wird von der Rolle 'Produktionmanager' durchgeführt. 
-  Diese Aufgabe ist folgendermaßen beschrieben: 
-  'Ein Plan für die Produktion des Produkts wird erstellt.'. 
 
  An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Es folgt ein Gateway vom Typ exclusiveGateway namens 'Ist der Produktionsplan machbar?'. 
@@ -149,7 +145,6 @@ Kapitel 3: Ab dem ersten gemeinsamen Element 'Verzweigung'
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Die Produktionsanlage (Maschinen usw.) wurde vorbereitet.'. 
 
- An dieser Stelle tritt innerhalb des Prozesses ein Gateway auf.
  Die Aufgabe 'Protokoll dokumentieren' wird von der Rolle 'Produktionmanager' durchgeführt. 
   Diese Aufgabe ist folgendermaßen beschrieben: 
   'Es wurde dokumentiert, warum der Produktionsplan nicht machbar oder realistisch ist.'. 

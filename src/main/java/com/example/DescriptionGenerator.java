@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 public class DescriptionGenerator {
     private int processedElementCount = 0;
     private List<FlowNode> missingElements = new ArrayList<>();
+    private Map<String, Set<String>> nodeToStartEventIdsMap = new HashMap<>();
     private Map<FlowNode, Set<StartEvent>> convergenceMap = new HashMap<>();
-    private Set<FlowNode> visitedElements = new HashSet<>();
 
     public int getProcessedElementCount() {
         return processedElementCount;
@@ -78,7 +78,11 @@ public class DescriptionGenerator {
 
         // Aktualisieren der fehlenden Elemente
         Set<FlowNode> missing = new HashSet<>(allFlowNodes);
-        missing.removeAll(visitedElements);
+        missing.removeAll(nodeToStartEventIdsMap.keySet().stream()
+                .map(id -> modelInstance.getModelElementById(id))
+                .filter(FlowNode.class::isInstance)
+                .map(FlowNode.class::cast)
+                .collect(Collectors.toSet()));
         missingElements.addAll(missing);
 
         return text.toString();
@@ -118,7 +122,6 @@ public class DescriptionGenerator {
                 continue;
             }
             visitedNodes.add(currentNode);
-            visitedElements.add(currentNode); // Hinzufügen zu den besuchten Elementen
             processedElementCount++;
 
             if (convergenceMap.get(currentNode).size() > 1 && stopAtCommonElement) {
@@ -128,9 +131,9 @@ public class DescriptionGenerator {
 
             Lane lane = findLane(modelInstance, currentNode);
             if (lane != null) {
-                ElementProcessor.processElement(currentNode, lane, text);
+                ElementProcessor.processElement1(currentNode, lane, text);
             } else {
-                ElementProcessor.processElement(currentNode, text);
+                ElementProcessor.processElement2(currentNode, text);
             }
 
             List<FlowNode> nextNodes = currentNode.getOutgoing().stream()
@@ -155,14 +158,19 @@ public class DescriptionGenerator {
                 continue;
             }
             visitedNodes.add(currentNode);
-            visitedElements.add(currentNode); // Hinzufügen zu den besuchten Elementen
             processedElementCount++;
+
+            nodeToStartEventIdsMap.computeIfAbsent(currentNode.getId(), k -> new HashSet<>()).add(startNode.getId());
+            if (nodeToStartEventIdsMap.get(currentNode.getId()).size() > 1) {
+                text.append("\nAn dieser Stelle überschneidet sich der Prozess mit dem zuvor beschriebenen.\n");
+                break;
+            }
 
             Lane lane = findLane(modelInstance, currentNode);
             if (lane != null) {
-                ElementProcessor.processElement(currentNode, lane, text);
+                ElementProcessor.processElement1(currentNode, lane, text);
             } else {
-                ElementProcessor.processElement(currentNode, text);
+                ElementProcessor.processElement2(currentNode, text);
             }
 
             List<FlowNode> nextNodes = currentNode.getOutgoing().stream()
